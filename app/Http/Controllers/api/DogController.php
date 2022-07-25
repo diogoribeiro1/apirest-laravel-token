@@ -79,4 +79,10 @@ class DogController extends Controller
 //        $dog = Dog::findOrFail($id);
 //        return $dog->delete();
     }
+
+    public function search($name)
+    {
+        return Dog::where('name', 'like', '%'.$name.'%')->get();
+    }
+
 }
