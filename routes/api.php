@@ -10,6 +10,7 @@ use App\Http\Controllers\UsersController;
 
 Route::controller(DogController::class)->prefix('dogs')->name('dogs.')->group(function () {
     Route::get('/', 'index')->name('index');
+    Route::get('/{name}/search', 'search')->name('search');
     Route::get('/{id}', 'show')->name('show')->middleware('auth:sanctum');;
     Route::post('/', 'store')->name('store')->middleware('auth:sanctum');
     Route::put('/{id}', 'update')->name('update')->middleware('auth:sanctum');

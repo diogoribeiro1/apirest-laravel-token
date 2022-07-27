@@ -11,7 +11,7 @@ class UsersController extends Controller
     function login(Request $request): JsonResponse
     {
         $credentials = $request->only('email', 'password');
-        // $teste = $request->user()->tokens()->;
+//        $this
 
         if(!auth()->attempt($credentials))
             abort(401, 'Invalid Credentials');
@@ -22,7 +22,7 @@ class UsersController extends Controller
             ->json([
                 'data'=>[
                         'token'=> $token->plainTextToken
-                ] 
+                ]
             ]);
     }
 
