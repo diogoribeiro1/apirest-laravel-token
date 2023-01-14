@@ -17,7 +17,12 @@ return new class extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('raca');
+            $table->unsignedBigInteger('created_by');
             $table->timestamps();
+        });
+
+        Schema::table('dogs', function (Blueprint $table) {
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

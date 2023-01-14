@@ -11,6 +11,8 @@ class Dog extends Model
 
     protected $fillable = [
         'raca',
-        'name'
+        'name',
+        'created_by',
+        'creationTime'
     ];
 }

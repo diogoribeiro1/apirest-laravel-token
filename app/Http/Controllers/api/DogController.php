@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Dog;
+use Laravel\Sanctum\Events\TokenAuthenticated;
 
 class DogController extends Controller
 {
@@ -13,20 +14,28 @@ class DogController extends Controller
     {
         $dog = Dog::get()->toJson(JSON_PRETTY_PRINT);
         return response($dog, 200);
-//        return Dog::all();
+        //        return Dog::all();
     }
 
     public function store(Request $request)
     {
-//        Dog::create($request->all());
+        $user = $request->user();
         $dog = new Dog();
         $dog->name = $request->name;
         $dog->raca = $request->raca;
-        $dog->save();
+        $dog->created_by = $user->id;
+        try {
 
-        return response()->json([
-        "message" => "dog record created"
-    ], 201);
+            $dog->save();
+            //Dog::create($request->all());
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                "message" => "something is incorrect!"
+            ], 400);
+        }
+
+        return response()->json(["message" => "dog record created by " . $user->name, 'dog' => $dog], 201);
     }
 
     public function show($id)
@@ -39,12 +48,12 @@ class DogController extends Controller
                 "message" => "Dog not found"
             ], 404);
         }
-//        return Dog::findOrFail($id);
+        //        return Dog::findOrFail($id);
     }
 
     public function update(Request $request, $id)
     {
-//        $dog = Dog::findOrFail($id);
+        //        $dog = Dog::findOrFail($id);
 //        return $dog->update($request->all());
         if (Dog::where('id', $id)->exists()) {
             $dog = Dog::find($id);
@@ -64,25 +73,25 @@ class DogController extends Controller
 
     public function destroy($id)
     {
-        if(Dog::where('id', $id)->exists()) {
+        if (Dog::where('id', $id)->exists()) {
             $dog = Dog::find($id);
             $dog->delete();
 
             return response()->json([
                 "message" => "records deleted"
-            ], 202);
+            ], 204);
         } else {
             return response()->json([
                 "message" => "Dog not found"
             ], 404);
         }
-//        $dog = Dog::findOrFail($id);
+        //        $dog = Dog::findOrFail($id);
 //        return $dog->delete();
     }
 
     public function search($name)
     {
-        return Dog::where('name', 'like', '%'.$name.'%')->get();
+        return Dog::where('name', 'like', '%' . $name . '%')->get();
     }
 
 }
